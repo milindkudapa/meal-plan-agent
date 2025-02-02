@@ -1,0 +1,88 @@
+Task: Build a Complete Full-Stack Health/Diet AI Application (Phase 1 MVP)
+
+Project Overview:
+-----------------
+Develop an AI-driven health/diet application that helps users achieve personalized diet goals using dynamically generated meal plans. The application comprises:
+
+• A Node.js backend built with Express and Sequelize (using SQLite) for persistence.
+• A Next.js frontend for user interactions—including user onboarding, daily input logging, meal plan display, meal consumption logging, and fixed supplement/recurring food management.
+
+The entire implementation should use live integration with OpenAI’s API (using the OPENAI_API_KEY environment variable) to generate meal plans (no simulation stubs).
+
+Project Codebase Structure:
+---------------------------
+The project should be organized into two main directories: `/backend` for the Node.js code and `/frontend` for the Next.js app.
+
+**Backend (/backend):**
+-------------------------
+Directory structure:
+  ├── package.json
+  ├── .env
+  └── src
+       ├── app.js                   // Main entry point that initializes Express, middleware, and routes.
+       ├── database.js              // Sequelize and SQLite setup.
+       ├── models                   // Sequelize model definitions.
+       │      ├── userModel.js
+       │      ├── dailyLogModel.js
+       │      ├── mealPlanModel.js
+       │      └── fixedSupplementModel.js
+       ├── controllers              // Business logic for each endpoint.
+       │      ├── userController.js
+       │      ├── dailyController.js
+       │      ├── mealPlanController.js
+       │      ├── logController.js
+       │      └── supplementController.js
+       ├── routes                   // Route definitions mapping API endpoints to controllers.
+       │      ├── userRoutes.js
+       │      ├── dailyRoutes.js
+       │      ├── mealPlanRoutes.js
+       │      ├── logRoutes.js
+       │      └── supplementRoutes.js
+       └── utils                    // Helper functions and utilities.
+              └── openaiClient.js   // Contains functions that wrap OpenAI API calls (using openai.ChatCompletion.create)
+
+Backend Requirements:
+  1. Use Express to create REST API endpoints.
+  2. Use Sequelize to define models for:
+       - User: Fields include id, height, weight, age, activity_level, desired_weight, goal_time_period, geographical_region, and food_preferences.
+       - DailyLog: Fields include id, user_id (foreign key), date, expected_activity_level, sleep_score, and resting_heart_rate.
+       - MealPlan: Fields include id, daily_log_id (foreign key), plan_details (a JSON field with calorie and nutrient breakdown), and generated_at.
+       - FixedSupplement: Fields include id, user_id (foreign key), supplement_name, nutrient_info (JSON), and timestamps for created_at/updated_at.
+  3. Implement the following API endpoints:
+       - POST /users: For registering a new user with onboarding details.
+       - POST /daily: For logging daily inputs such as expected activity level, sleep score, and resting heart rate.
+       - GET /mealplan: To generate a meal plan based on the user’s profile and latest daily log. This must invoke the OpenAI API via your openaiClient utility to generate an accurate meal plan with real calorie and nutrient breakdown data. Include basic adjustment logic if previous logs show deviations.
+       - POST /logs: For logging meal consumption details (food names, quantities, calorie counts) and associating them with the current DailyLog.
+       - POST /supplements: To add or update fixed supplements/recurring foods.
+  4. Provide comprehensive error handling, proper response statuses, and inline documentation.
+  5. Include instructions (in code comments) on how to set the `OPENAI_API_KEY` in the `.env` file and how to run the app (e.g., using nodemon or node src/app.js).
+
+**Frontend (/frontend):**
+---------------------------
+Directory structure should follow a standard Next.js setup:
+  ├── package.json
+  ├── next.config.js (if needed)
+  └── pages
+         ├── index.js              // Landing page with navigation links.
+         ├── register.js           // Registration page to capture user onboarding details (POST to /users).
+         ├── daily.js              // Daily inputs page to log expected activity, sleep score, and heart rate (POST to /daily).
+         ├── mealplan.js           // Page that fetches and displays the generated meal plan from GET /mealplan.
+         ├── logs.js               // Page for logging meal consumption details (POST to /logs).
+         └── supplements.js        // Page for adding/updating fixed supplements (POST to /supplements).
+
+Frontend Requirements:
+  1. Use Axios (or the built-in fetch API) for API calls to the backend.
+  2. Use React hooks (useState, useEffect) to manage state and side effects.
+  3. Use Next.js Link for client-side navigation between pages.
+  4. Provide clean and intuitive forms with proper form validations and error handling.
+  5. Include inline comments explaining functionality.
+  6. Provide instructions (in comments) on how to install dependencies and run the app (e.g., `npm run dev`).
+
+General Guidelines:
+  - The code should be complete and fully functional with no simulation stubs.
+  - Use proper modularization and separation of concerns in both the backend and frontend.
+  - Ensure production-ready practices are followed with good error handling and logging.
+  - Include detailed inline documentation and comments alongside the code.
+  - Provide instructions in a README-like comment on how to set up the environment, install dependencies, and run both parts of the application.
+
+End Task.
